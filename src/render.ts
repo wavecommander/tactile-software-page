@@ -3,6 +3,16 @@ import type { SiteCard } from "./metadata";
 const esc = (s: string) =>
 	s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
+// Cloudflare's Email Address Obfuscation doesn't touch Worker-generated HTML, so emit its format directly:
+// a random key byte followed by each character XORed with it, decoded in the browser by Cloudflare's script.
+function cfEmail(address: string): string {
+	const key = crypto.getRandomValues(new Uint8Array(1))[0];
+	const hex = (n: number) => n.toString(16).padStart(2, "0");
+	return hex(key) + [...address].map((c) => hex(c.charCodeAt(0) ^ key)).join("");
+}
+
+const CF_EMAIL_DECODE = "/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js";
+
 // theme-color comes from someone else's page and ends up in a style attribute, so only allow plain colours.
 const safeColor = (c: string | null) =>
 	c && /^(#[0-9a-f]{3,8}|(rgb|hsl)a?\([\d\s.,%/]+\)|[a-z]{3,20})$/i.test(c.trim()) ? c.trim() : null;
@@ -31,6 +41,7 @@ function card(s: SiteCard): string {
 }
 
 export function renderPage(sites: SiteCard[]): string {
+	const email = cfEmail("us@tactile.software");
 	const list = sites.length
 		? `<ul class="grid">${sites.map(card).join("\n")}</ul>`
 		: `<p class="empty">Nothing here yet.</p>`;
@@ -66,10 +77,10 @@ body {
 }
 .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
 header { padding: 88px 0 56px; }
-.mark { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -.01em; color: var(--muted); }
-.mark svg { width: 28px; height: 28px; }
-h1 { font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.02; letter-spacing: -.035em; margin: 20px 0 16px; font-weight: 700; }
+h1 { font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.02; letter-spacing: -.035em; margin: 0 0 16px; font-weight: 700; }
 .lede { font-size: 1.15rem; color: var(--muted); max-width: 34rem; margin: 0; }
+.contact { display: inline-block; margin-top: 20px; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 2px; }
+.contact:hover { border-color: var(--text); }
 h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-weight: 600; margin: 0 0 20px; }
 .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
 .card {
@@ -102,9 +113,9 @@ footer { padding: 72px 0 48px; color: var(--muted); font-size: .85rem; }
 <body>
 <div class="wrap">
 	<header>
-		<span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor" opacity=".15"/><path d="M9 10h14M16 10v13" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>tactile.software</span>
 		<h1>Tactile Software</h1>
-		<p class="lede">Small, hands-on software for making, listening and thinking.</p>
+		<p class="lede">Software you can feel the quality of.</p>
+		<a class="contact" href="/cdn-cgi/l/email-protection#${email}"><span class="__cf_email__" data-cfemail="${email}">[email&#160;protected]</span></a>
 	</header>
 	<main>
 		<section aria-labelledby="projects">
@@ -114,6 +125,7 @@ footer { padding: 72px 0 48px; color: var(--muted); font-size: .85rem; }
 	</main>
 	<footer>© ${new Date().getUTCFullYear()} Tactile Software</footer>
 </div>
+<script data-cfasync="false" src="${CF_EMAIL_DECODE}"></script>
 </body>
 </html>`;
 }
