@@ -1,6 +1,6 @@
-# tactile-landing
+# tactile-software-page
 
-The landing page for **tactile.software**. It's a single Cloudflare Worker that finds every other Worker
+The landing page for **tactile.software**. It's a single Cloudflare Worker (`tactile-landing`) that finds every other Worker
 with a `*.tactile.software` hostname and renders a card for each one.
 
 ## How it works
