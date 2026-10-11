@@ -1,0 +1,13 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "tactile-landing",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-09-01",
+	"observability": { "enabled": true },
+	"vars": {
+		"ZONE_NAME": "tactile.software",
+		"SELF_SERVICE": "tactile-landing",
+		"CF_ACCOUNT_ID": "32e09135eef221254b0a2e469bd6fe43"
+	}
+	// Secret (not in this file): CF_API_TOKEN — `wrangler secret put CF_API_TOKEN`
+}
