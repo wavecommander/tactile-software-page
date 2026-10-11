@@ -4,6 +4,7 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2026-09-01",
 	"observability": { "enabled": true },
+	"routes": [{ "pattern": "tactile.software", "custom_domain": true }],
 	"vars": {
 		"ZONE_NAME": "tactile.software",
 		"SELF_SERVICE": "tactile-landing",
