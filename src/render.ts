@@ -40,9 +40,9 @@ export function renderPage(sites: SiteCard[]): string {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tactile Software</title>
-<meta name="description" content="Small, hands-on software from Tactile Software.">
+<meta name="description" content="Software you can feel the quality of.">
 <meta property="og:title" content="Tactile Software">
-<meta property="og:description" content="Small, hands-on software from Tactile Software.">
+<meta property="og:description" content="Software you can feel the quality of.">
 <meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
