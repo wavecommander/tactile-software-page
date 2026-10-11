@@ -10,6 +10,10 @@ with a `*.tactile.software` hostname and renders a card for each one.
    - Workers Routes: `GET /zones/{zone}/workers/routes`. Wildcard patterns are skipped.
 
    It leaves out this Worker (`SELF_SERVICE`) and the hostname the page is served from.
+
+   There's one card per Worker. If a Worker has several hostnames, the card uses the one set up first,
+   going by its DNS record's `created_on`. Without DNS Read on the token, it uses the subdomain that best
+   matches the Worker's name, then the shortest.
 2. **Metadata** (`src/metadata.ts`): fetches each site's home page and web manifest, then fills in:
 
    | Field | Sources, in order |
@@ -44,6 +48,7 @@ The token is named `tactile-landing: read workers` and is owned by the account. 
 
 - Account → **Workers Scripts: Read** (lists custom domains)
 - Zone `tactile.software` → **Workers Routes: Read**
+- Zone `tactile.software` → **DNS: Read** (optional; used to pick a Worker's original hostname)
 
 ### Serving it at tactile.software
 
