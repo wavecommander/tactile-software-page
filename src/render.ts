@@ -177,13 +177,15 @@ export function renderPrivacyPolicy(): string {
 	const partners = PARTNERS.map((p) => `<li><a href="${esc(p.policy)}">${esc(p.name)} Privacy Policy</a></li>`).join("\n");
 	return layout({
 		title: "Privacy Policy · Tactile Software",
-		description: "Tactile Software Ltd does not collect or store any data.",
+		description: "Tactile Software Ltd. does not collect or store any data.",
 		header: `<a class="back" href="/"><span aria-hidden="true">←</span> Tactile Software</a>
-		<h1>Privacy Policy</h1>
+		<h1>Privacy Policy - Interim</h1>
 		<p class="updated">Last updated 15 October 2026</p>`,
 		main: `<article class="prose">
 			<h2>No data is collected</h2>
-			<p>Tactile Software Ltd does not collect or store any data, at any point, in any use of the products it provides. That includes this website and every project listed on it.</p>
+			<p>Tactile Software Ltd. does not collect or store any data, at any point, in any use of the products it provides. That includes this website and every project listed on it.</p>
+
+			<p>This is subject to change with the introduction of new software products. Such future changes will be noted in said new software products as well as here, and the history of changes will be present and available here as well.</p>
 
 			<h2>Our partners</h2>
 			<p>Our products are delivered using services from partners such as Cloudflare and Google. These partners are the only parties that store any data, and only their privacy policies apply to it:</p>
