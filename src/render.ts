@@ -40,24 +40,7 @@ function card(s: SiteCard): string {
 </li>`;
 }
 
-export function renderPage(sites: SiteCard[]): string {
-	const email = cfEmail("us@tactile.software");
-	const list = sites.length
-		? `<ul class="grid">${sites.map(card).join("\n")}</ul>`
-		: `<p class="empty">Nothing here yet.</p>`;
-	return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tactile Software</title>
-<meta name="description" content="Software you can feel the quality of.">
-<meta property="og:title" content="Tactile Software">
-<meta property="og:description" content="Software you can feel the quality of.">
-<meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<style>
+const STYLES = `
 :root {
 	color-scheme: light dark;
 	--bg: #f6f3ec; --surface: #fffdf8; --text: #1d1a15; --muted: #6b6457;
@@ -106,26 +89,98 @@ h3 { margin: 0; font-size: 1.1rem; letter-spacing: -.01em; display: flex; align-
 .host { margin-top: auto; padding-top: 8px; font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .card:hover .host { color: var(--text); }
 .empty { color: var(--muted); }
-footer { padding: 72px 0 48px; color: var(--muted); font-size: .85rem; }
+footer { padding: 72px 0 48px; color: var(--muted); font-size: .85rem; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+footer a { color: inherit; }
+footer a:hover { color: var(--text); }
+.back { display: inline-block; margin-bottom: 28px; color: var(--muted); text-decoration: none; font-size: .95rem; }
+.back:hover { color: var(--text); }
+.prose { max-width: 40rem; }
+.prose h2 { margin-top: 44px; }
+.prose p, .prose li { color: var(--text); }
+.prose ul { padding-left: 1.2em; }
+.prose a { color: inherit; }
+.updated { color: var(--muted); margin: 0; }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
-</style>
+`;
+
+const CONTACT = "us@tactile.software";
+const contactLink = (cls = "") => {
+	const email = cfEmail(CONTACT);
+	return `<a${cls ? ` class="${cls}"` : ""} href="/cdn-cgi/l/email-protection#${email}"><span class="__cf_email__" data-cfemail="${email}">[email&#160;protected]</span></a>`;
+};
+
+function layout(opts: { title: string; description: string; header: string; main: string }): string {
+	return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(opts.title)}</title>
+<meta name="description" content="${esc(opts.description)}">
+<meta property="og:title" content="${esc(opts.title)}">
+<meta property="og:description" content="${esc(opts.description)}">
+<meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>${STYLES}</style>
 </head>
 <body>
 <div class="wrap">
 	<header>
-		<h1>Tactile Software</h1>
-		<p class="lede">Software you can feel the quality of.</p>
-		<a class="contact" href="/cdn-cgi/l/email-protection#${email}"><span class="__cf_email__" data-cfemail="${email}">[email&#160;protected]</span></a>
+		${opts.header}
 	</header>
 	<main>
-		<section aria-labelledby="projects">
-			<h2 id="projects">Projects</h2>
-			${list}
-		</section>
+		${opts.main}
 	</main>
-	<footer>© ${new Date().getUTCFullYear()} Tactile Software</footer>
+	<footer><span>© ${new Date().getUTCFullYear()} Tactile Software Ltd</span><a href="/privacy-policy">Privacy Policy</a></footer>
 </div>
 <script data-cfasync="false" src="${CF_EMAIL_DECODE}"></script>
 </body>
 </html>`;
+}
+
+export function renderPage(sites: SiteCard[]): string {
+	const list = sites.length
+		? `<ul class="grid">${sites.map(card).join("\n")}</ul>`
+		: `<p class="empty">Nothing here yet.</p>`;
+	return layout({
+		title: "Tactile Software",
+		description: "Software you can feel the quality of.",
+		header: `<h1>Tactile Software</h1>
+		<p class="lede">Software you can feel the quality of.</p>
+		${contactLink("contact")}`,
+		main: `<section aria-labelledby="projects">
+			<h2 id="projects">Projects</h2>
+			${list}
+		</section>`,
+	});
+}
+
+const PARTNERS = [
+	{ name: "Cloudflare", policy: "https://www.cloudflare.com/privacypolicy/" },
+	{ name: "Google", policy: "https://policies.google.com/privacy" },
+];
+
+export function renderPrivacyPolicy(): string {
+	const partners = PARTNERS.map((p) => `<li><a href="${esc(p.policy)}">${esc(p.name)} Privacy Policy</a></li>`).join("\n");
+	return layout({
+		title: "Privacy Policy · Tactile Software",
+		description: "Tactile Software Ltd does not collect or store any data.",
+		header: `<a class="back" href="/"><span aria-hidden="true">←</span> Tactile Software</a>
+		<h1>Privacy Policy</h1>
+		<p class="updated">Last updated 15 October 2026</p>`,
+		main: `<article class="prose">
+			<h2>No data is collected</h2>
+			<p>Tactile Software Ltd does not collect or store any data, at any point, in any use of the products it provides. That includes this website and every project listed on it.</p>
+
+			<h2>Our partners</h2>
+			<p>Our products are delivered using services from partners such as Cloudflare and Google. These partners are the only parties that store any data, and only their privacy policies apply to it:</p>
+			<ul>
+${partners}
+			</ul>
+
+			<h2>Contact</h2>
+			<p>Questions about this policy can be sent to ${contactLink()}.</p>
+		</article>`,
+	});
 }
