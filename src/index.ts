@@ -1,6 +1,6 @@
 import { discoverWorkers } from "./discover";
 import { fetchCard, type SiteCard } from "./metadata";
-import { renderPage, renderPrivacyPolicy } from "./render";
+import { renderAbout, renderPage, renderPrivacyPolicy } from "./render";
 
 const CACHE_KEY = "https://tactile-landing.internal/sites/v1";
 const CACHE_TTL_S = 600;
@@ -42,6 +42,12 @@ export default {
 			if (url.pathname === "/api/sites") return Response.json(sites, { headers });
 			return new Response(renderPage(sites), {
 				headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
+			});
+		}
+
+		if (url.pathname === "/about" || url.pathname === "/about/") {
+			return new Response(renderAbout(), {
+				headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=3600" },
 			});
 		}
 

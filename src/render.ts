@@ -132,7 +132,7 @@ function layout(opts: { title: string; description: string; header: string; main
 	<main>
 		${opts.main}
 	</main>
-	<footer><span>© ${new Date().getUTCFullYear()} Tactile Software Ltd</span><a href="/privacy-policy">Privacy Policy</a></footer>
+	<footer><span>© ${new Date().getUTCFullYear()} Tactile Software Ltd.</span><a href="/about">About</a><a href="/privacy-policy">Privacy Policy</a></footer>
 </div>
 <script data-cfasync="false" src="${CF_EMAIL_DECODE}"></script>
 </body>
@@ -153,6 +153,18 @@ export function renderPage(sites: SiteCard[]): string {
 			<h2 id="projects">Projects</h2>
 			${list}
 		</section>`,
+	});
+}
+
+export function renderAbout(): string {
+	return layout({
+		title: "About · Tactile Software",
+		description: "Tactile Software is a company founded by Ben Waver, making software from Canada.",
+		header: `<a class="back" href="/"><span aria-hidden="true">←</span> Tactile Software</a>
+		<h1>About</h1>`,
+		main: `<article class="prose">
+			<p>Tactile Software is a company founded by <a href="https://github.com/wavecommander">Ben Waver</a>, making software from Canada.</p>
+		</article>`,
 	});
 }
 
